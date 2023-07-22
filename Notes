@@ -1,0 +1,215 @@
+TODO --- Spring MVC ----------------------------------------------------------------------------------------------------
+Spring MVC: Spring in modülleri kullanılarak Spring'in core container i üzerine inşa edilmiş,
+Java ile web projeleri geliştirmemizi sağlayan, Sbring'in bir framework'u.
+-Bu framework modelviewandcontroller dizayn pattern ini, mvc tasarım kalıbını kullanır.
+-İstemciden/browser dan gelen istekler/request öncelikle "controlller" da karşılanır.
+-Eğer bir data gerekiyorsa, ilgili model bulunuyor, data üzerinde manipulasyon gerekliyse, gereken manipulasyon yapılarak
+data üzerinde manipulasyon gerekli değilse model/data/veriyle birlikte
+görüntüleme dosyasının ismini view katmanında/görüntüleme kısmında hangi
+yapıyı kullanıyorsanız(html, java script, jsp) bu dosyanın ismiyle birlikte döner.
+model dosyasının içindeki bilgi ya da objeler görüntüleme dosyasının/view
+ilgili html dosyası bulunarak view katmanına iletiliyor.
+view katmanı tarafından çözümlenerek kullanıcıya gösterilen son bölüm.
+
+-Spring MVC framework u front controller dizayn pattern ini de kullanır. Front Controller Dizayn pattern sevk memuru gibi davranır.
+dağıtıcı görevi görür. Gelen request hangi controller tarafından karşılanacaksa ilgili controller a yönlendirir. trafik polisi, sevk memuru...
+-Sprign MVC de front controller(ön kontrolcü) görevini "dispatcher servlet" yapar. Özel bir servlet classi dır.
+Dispatcher servlet Spring MVC içinde front controller görevini görür.
+-Dispatcher servlet projemizdeki kodları servlet a çevirir/döndürür ve hazır olarak kullanmamızı sağlar ve front controller görevini yapar.
+-Java da web uygulamaları geliştirebilmemiz için özel yazılımlara, özel class lara ihtiyacımız var. Javada web uygulaması geliştirebilmek için
+java servlet class oluştumamız gerekiyor.
+-Java ile yazılan bir web uygulaması nın servlet larla oluşturulması gerekiyor. Bu servlet ları çalıştırmamızı sağlayan bir yazılım a ihtiyac var.
+Bu özel yazılımları "servlet conteyner, servlet engine, web conteyner" isimleriyle görebiliyoruz. Biz servlet conteyner olarak "Tomcat" i kullanacağız.
+Tomcat hem web conteyner hem de servlet conteyner görevini görür.
+
+------------------------------------------------------------------------------------------------------------------------
+-Student Management System -proje
+-Maven kullanarak bir proje açtık, ilgili bağımlılıkları/gerekli kütüphaneleri maven yardımıyla yükledik
+-view katmanındaki dosyaları hazır olarak yükledik çünkü dersin amacı view katmanı yani jsp,html,css değil.
+bu kısımlar user interface kısmı, bizim dersimiz backend e yönelik.
+
+-Tomcat ilk defa çalıştırıldığında "index.jsp" dosyasını çalıştırır/görüntüler, kullanıcıya döner.
+index.jsp ye herkes için ortak, static bir karşılama sayfası yükledik
+-code bazlı bir configuration gerçekleştireceğimiz için web.xml dosyasını buradan sildik. web.xml yerine "WebAppInitializer" class ini tanımladık.
+
+------------------------------------------------------------------------------------------------------------------------
+TODO --- Bir Spring MVC projesi için -----------------------------------------------------------------------------------
+configuration ayarlaması yapmam lazım, configuration için neleri gerçekleştirmem lazım?
+
+-Her projenin/uygulamanın mutlaka konfigürasyon ayarları olmalıdır, yapılmalıdır ki projeniz bu ayarlar üzerine geliştirilecek.
+-Bir Spring MVC projesi  için nelere ihtiyacım var,
+view resolwer i düzenlemem lazım,
+dispatcher servlet tarafından hangi isteklerin karşılanacağını bilmem lazım,
+en başta dispatcher servlet in tanımlanması gerekiyor-bunu bilmem lazım,
+DB ile ilgili hibernate/jdbc kullanıyor isem Hibernate ve JDBC ile ilgili gerekli ayarlamaları yapabilmem lazım
+
+güvenilir kaynak: Spring in dokümantasyonu, google, eski projelerden yapılanları bulabiliriz. basmakalıp kodlar dır genellikle.
+
+------------------------------------------------------------------------------------------------------------------------
+Spring MVC bize abstract classlar, interface ler vermiş. bu classların methodlarının  body lerini doldurarak  override işlemi yapmış oluyoruz sadece.
+
+------------------------------------------------------------------------------------------------------------------------
+Projemizde üç katmanlı mimari(three-layer architecture) kullanacağız
+Katmanlar:
+1-controller - requestleri/istekleri karşılayacağımız classların olduğu katman/package
+2-domain/model/entitiy    - hibernate deki entity class ları koyacağımız katman/package
+3-services   - controller ve repository arasında köprü görevi kuran ya da DB'den aldığım datalar üzerinde manipülasyon yapacağım class ların olacağı katman/package
+4-repository - DB'ye erişim yapacağım class ların olduğu katman/package
+
+------------------------------------------------------------------------------------------------------------------------
+//TODO --- Spring MVC - Session 3---------------------------------------------------------------------------------------
+Spring MVC Spring icinde, Spring'in java ile web uygulaması geliştirmek için MVC mimarisi üzerine kululmuş bir modülü.
+Spring Framework un bir modülü, başlı başına bir framework haline gelmiş.
+Spring in tüm projelerinde olduğu gibi temelinde "core container" var. Core Container bize "IoC" programlama prensibi, "DI" mekanizmasını sağlar.
+Spring MVC, Spring Framework ten farklı olarak java web uygulamaları geliştirebiliriz.
+
+TODO --- Web Uygulaması nedir? -----------------------------------------------------------------------------------------
+Arayüz olarak web sitelerinin kullanıldığı uygulamalar web uygulaması olarak adlandırılır.
+Static Web App: Kullanıcıya göre değişmeyen, her kullanıcıya aynı sayfa açılır, kullanıcıya göre değişmez homepage
+                Static page lerden oluşan uygulamaya Static Web App denir.
+                Web browser tarafından istenen static sayfa web sunucu tarafından bulunur ve doğrudan gönderilir
+Dynamic Web App: Her bir kullanıcıya göre değişen sayfalardan oluşan uygulamalar.
+                Web browser tarafından istenen dynamic sayfa için ise isteği işlemekten sorumlu özel yazılımın bu sayfayı üretmesi gerekir.
+
+Java Servlet, sunucu - istemci tabanlı uygulamaların haberleşmesini yönetmek için kullanılan sınıf, arayüz ve paket topluluğudur.
+
+TODO --- Web uygulamaları nasıl çalışır? -------------------------------------------------------------------------------
+sitede form içindeki inputları doldurup "login" tıklatığımda browser istemci olmuş oluyor ve bir "request" oluşturmuş oluyourm.
+Bu request ler HTTP protokolü bir sunucu ya gönedriliyor.
+HTTP protokolü sunucu ile istemci arasındaki request-response iletişimini sağlayan bir protokol.
+Server/Sunucu: Geliştirdiğimiz uygulamalar sadece lokalde, kendi bilgisayarımızda çalışıyor. Gerçek uygulama, uzakta bir sunucu da çalışabilir.
+Web uygulaması 7/24 bize yanıt vermesi için 7/24 açık olması gerekir. Fiziksel bir server içinde bir de web server olması gerekiyor.
+Bir yazılım, bir software. bu web server da 7/24 çalışmalı. bizim uygulammamız da bur server üzerinde çalışmalı.
+DB ye ihtiyaç varsa bir de DB için server e ihtiyaç var. DB server da çalışmalı.
+
+TODO --- Servlet API----------------------------------------------------------------------------------------------------
+Java'da gelen request lerin handle edilmesi/çözümlenmesi, işlenmesi ve bu requestlere uygun response ların verilmesi için
+Java Servlet API kullanır. İçerisinde requestlerin handle edilmesi/karşılanması,  gelen isteğe uygun data/response varsa DB'ye bakıp response dönecek.
+Request lerin karşılanıp response olarak hazırlanmasını sağlayan, Java Servlet Class'ları, İnterface ler, Java servlet package lerini içeren Java Servlet API kulanılması gerekiyor.
+Java'da requestlerin çözümlenip response hazırlanması işlemi için Java Servlet API kullanılır.
+Servlet ların yönetiminden sorumlu yapı Servlet Container. Servlet ların yaşam döngüsü, yönetimi, başlatımı, kullanımı, imhasından sorumlu.
+Bir yazılım, bazen  "web container", "servlet engine" olarak da adlandırılır.
+Uygulamamazı içindeki servlet ların yaşam döngüsünden sorumlu olarak Apachi Tomcat yazılımını kullanacağız.
+Spring Boot'ta tomcat gömülü olarak geliyor, yaygın kullanımı olan bir yazılım.
+
+client-request(static): web server, response u bulup dönüyor.
+client-request(dynamic): web server kendisi response oluşturmuyor. Servlet Container'a(Web Container/Servlet Engine) iletiyor.
+                         Servlet Container, request ile ilgili olan servlet class i buluyor. servlet icerisindeki proporties e bakılıyor.
+                         sonucunda bir response hazırlanıyor.
+                         Hazırlanan response Servlet Container'a veriliyor,
+                         servlet container respons'u, Web Server'a bilgiyi bir web sayfası halinde hazırlayıp veriyor,
+                         kullanıcıya içerisinde istenen bilgilerle birlikte bir sayfa olarak/http protokolü kullanılarak dönülüyor.
+
+Tomcat özel olarak hem "Web Server" hem de "Servlet Container" olarak görev yapan apachi nin özel bir yazılımı.
+TODO -------------------- Spring MVC nedir? --------------------------------------------------------------------------
+-Spring in modüllerini kullanan, Java ile web uygulamaları yapmak için bir Framework'dür.
+-Model-View-Controller design pattern üzerine inşa edilmiştir.
+
+Model: data, hibernate teki entity classların bulunduğu kısım. Dataların bulunduğu, verilerin modellendiği bölüm.
+        Student Management System uygulamasında  Student objesi üzerinden projeyi geliştirdik. Bu Student objesi bir modellerden. Student objesi içindeki bilgiler.
+        Hibernate teki entity class ları model katmanında yer alması gerekir.
+View: User in gördüğü kısım. Herhangi bir görüntüleme sistemi ile kullanıcıya en son gösterilen kısım. User Interface diyebilirsiniz.
+      Request e karşılık olarak hazırlanan response bir görüntü olarak sunulur kullanıcıya. Kullanıcıya görüntü olarak sunulan kısım View katmanı olarak isimlendiriliyor.
+      View katmanını oluşturmak için HTML/css, jsp kullanabilirsiniz.
+Controller: Gelen request e karşılık, request icindeki bilgileri kullanarak(username, password) uygun response hazırlayıp, DB'ye bağlanıp kullanıcıya görsel olarak sun diyen kısım.
+            Controller request e uygun model i buluyor, model üzerindeki verileri işleyip/manipulasyon yapıyor. Response olarak dönülecek datayı hazırlıyor.
+            Contorller in sunmuş olduğu datayı response body si içine koyuyor. View katmanına iletiyor.
+Spring MVC, Spring den bağmısız bir dizayn pattterndir. Herhangi bir uygulamayı Model-View-Controller katmanlarını oluşturarak
+            bu mimari yapıya göre oluşturabilirsiniz.
+
+-Dynamic Web Application oluşturulabilir
+-RESTFUL service üretmek için kullanılabilir
+Restful API geliyor akla. API'nin implementasyonları yani concrete classları vardı. Bunlardan en popüleri
+SOAP ve REST API idi. API eğer REST mimarisine göre düzenlenmiş/geliştirilmiş ise RESTFUL olarak isimlendiriliyordu.
+API ile eğer internet üzerinden iletişim sağlıyorsa web service olarak isimlendiriliyordu.
+REST mimarisi ile oluşturulmuş API'ler RESTFUL olarak isimlendirilebilir.
+
+Spring MVC ile dynamic bir web uygulaması gerçekleştirebilirken sadece backend kısmı için RESTFUL service ler de üretilebiliyor.
+-Core Spring Framework(IoC, DI) ün getirdiği kolaylığı sağlar.
+Spring MVC, Spring üzerine inşa edilmiştir. Spring in temelinde core container var. Core Container ise bize IoC ve DI in getirdiği kolaylığı sağlar.
+
+TODO--- Spring MVC nasıl çalışıyor? ------------------------------------------------------------------------------------
+Client id=1 olan student i görmek istiyor.
+Bir tane istek oluşturacak. Http request nasıl oluşturuluyor: öncelikle URI a/ and point e ihtiyacımız var.
+Bir basis url olacak. devamıda /student?id=1
+//  ?id=1(query param)
+//  /student(path / ile girdiğim parametreler path param)
+
+request için URI + http'nin GET(read/okuma işlemi) methodu
+http request inde http method larına ihtiyacım var, görüntüleme yapacaksam: get, put...
+request im http protokolüyle web sunucusuna doğru yola çıktı. MVC mimarı kullandıysak Contorller katmanı karşılıyor.
+id=1 olan model lazım. DB ye bağlanıyor. Buluyor. tüm bilgileri göstermek istemiyorsam, ilgili bilgileri alıyorum, manipülasyon yapıyorum ve view katmanına gönderiyorum
+view katmanında bu bilgiler gerekli bilgileri ekleyip response olarak bir web sayfası olarak, görüntüleme teknolojiis kullanarak kullanıcıya dönüyor.
+
+
+TODO -- Spring MVC Configurations --------------------------------------------------------------------------------------
+
+-Spirng MVC supports 2 farklı konfigürasyonu destekliyor
+ 1.XML  Based Configuration
+ 2.Java Based Configuration(biz Java Based Configuration kullanacağız)
+
+ TODO --- Önemli Annotation'lar ----------------------------------------------------------------------------------------
+Spring teki temel annotationlar dışında Spring MVC de kullanacağımız önemli annotationlar:
+
+ @Controller : Bu class istemciden gelen requestleri karşılayacak olan classim, karşılama yapılacak. Controller katmanının class i anlamına gelir.
+ @RestController : Spring MVC ile dynamic bir web uygulaması geliştirebildiğimiz gibi, bir REST API oluşturabiliriz.
+                    Rest API oluşturmak istediğimizde Rest service oluşturacağımız anlamına gelen bu annotaion u kullanırız.
+
+ @RequestMapping: Bir controller katmanı oluşturduğumuzda gelen request URI ile, basis url ile birlikte geliyor: /path ler ile geliyor istekler.
+                Class içerisinde hangi istekleri karşılayacağımızı göstermek için kullanırız. Class ve method level kullanılabilir.
+-request ler URI ve http methodları ile gelecek.
+ @GetMapping : eğer datayı görüntüleme/view işlemi söz konusu ise get methodunu
+ @PostMapping : yeni bir data oluşturulması gerekiyorsa post methodunu
+ @PutMapping : mevcut datayı güncellemek gerekiyorsa put methodunu
+ @DeleteMapping : bir datayı silmek gerekiyorsa delete methodunu
+        dolayısıyla bu URI ile gelen istekler get methodu ile geldiyse @GetMapping ile,
+        post ile geldiyse @PostMapping,
+        put ile geldiyse @PutMapping,
+        delete methodu ile geldiyse @DeleteMapping ile karşılayacağız.
+        @RequestMapping ile get, post, put, delete annotationlarını kullanacağız.
+ @RequestParam -  @PathVariable: URI oluşturulurken path parametre veya query parametre kullanılabilir. / veya ? ...
+ Request ile gelen parametreyi okuyabilmek için
+   /student/1 ==> @PathVariable veya (id 1 olan öğrenciyi istiyor)
+   student?id=1 ==> request içinde query parametresi kullanılmış ise @RequestParam kullanacağız (id 1 olan öğrenciyi istiyor bu da)
+
+ @RequestBody : kayıt sayfasnıda kulllanıcı bilgileriyle kaydolmak istiyorum. kaydol butonuna bastığımda inputlara girdiğim bilgilerin
+ request/istek içine gönderilmesi gerekior. Bu bilgiler request in body si olmuş oluyor. bu body iy alabilmek için @RequestBody kullanıyorum.
+ @ResponseBody : bu isteklere karşılık bazı datalar dönüyorsak da @ResponseBody ile eklemiş oluyoruz.
+
+TODO --- Front Controller Nedir?
+-Bir yazılım mimarisi veya tasarım desenidir.
+-İstemciden gelen tüm istekleri tek bir merkezi noktada yakalar ve işleme sürecini yönlendirir.
+ Front Controller: Ön kontrolcü, yazılım mimarisi, dizayn pattern.
+ Web browser dan bir istek/request geldiğinde controller dan önce Front controller bu isteği/request i karşılar.
+ Bu request i hangi controller karşılamalı, birden çok controller olabilir.
+ Student ve Teacher olarak iki controller katmanı olabilir.
+ Request içindeki model a bakıyor, ilgili katmana gönderiyor.> controllerda model bulunup manipule> view template web browser a response ediyor.
+
+Spring MVC merkezi bir servlet class, özel bir servlet oluşturuyor: Dispatcher Servlet. Request leri karşılayıp, merkezi bir kontrol sağlıyor, isteği gerekli controller a yönlendiriyor.
+Spring MVC'de Dispatcher Servlet Front Controller görevi görüyor.
+Programda yazmış olduğumuz kodlar servlet uygulamasına dönüştürülüyor ve web service üzerinde çalışması sağlanmış oluyor.
+TODO ----- Dispatcher Servlet yani front controller ile birlikte request - response akışı :
+
+    Request> Dispatcher Servlet > Dispatcher Servlet icinde Handler Mapping mekanizması var. Request i hangi controller'ın karşılayacağına karar veriyor, yönlendiriyor
+    Controller gelen istek içerisindeki model a bakıyor, gerekirse DB'ye gidip ilgili model i buluyor, ihtiyaç var ise manipülasyonlar yapıyor,
+    hazırladığı cevabı ModelAndView objesi olarak dönüyor.
+
+TODO ----- ModelAndView:
+id = 1 olan request i geldiyse. Controller DB'ye gider. id = 1 olan studnet i bulur, model objesine yerleştirir.
+student ismindeki görüntüleme dosyasıyla birliket bu model ı göster diyor Dispatcher Servlet a.
+Dispatcher Servlet ta ViewResolver mekanizması var, görüntüyü çözümleyici. Student jsp dosyasını bulunmasını sağlıyor.
+Model ile gelen name, lastname i yazıyor, çözümlüyor, hazırlıyor ve Dispatcher Servlet a gönderiyor.
+Dispatcher Servlet View katmanına gönderiyor.  View de tekrar response olarak client e gönderiyor.
+
+Controller dan response dönerken student objesini döneceğiz ve hangi görüntüleme dosyasını istiyorsa bu dosyanın ismini String olarak döneceğiz.
+Bu String bilgiyi ViewResolver katmanını kullanarak view katmanındaki ilgili dosyayı buluyor, bu dosya içine bilgileri yerleştiriyor.
+
+TODO ---------- 3 Layer Architecture
+
+Client             Controller                     Service                      Repository
+Request            Request karşılanır            manipulasyon,                 DB'ye ulaşılan kısım
+                   model bulunur                 logic işlemleri
+                   gerekirse DB'ye gidip         Controller-Repository
+                   datayı bulur                  köprü
+                   gerekli response
+                   hazırlanır
